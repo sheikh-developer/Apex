@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
-    "build": "tsx lib/db/migrate && next build",
+    "build": "tsx src/lib/db/migrate.ts && next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
@@ -20,7 +20,7 @@
     "preview": "next start",
     "clean": "rimraf .next dist coverage",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx lib/db/migrate.ts",
+    "db:migrate": "tsx src/lib/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
