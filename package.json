@@ -38,6 +38,7 @@
     "ci": "pnpm run lint && pnpm run build && pnpm run test"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
     "@ai-sdk/google": "^1.2.22",
     "@ai-sdk/provider": "2.0.0-beta.1",
     "@ai-sdk/react": "2.0.0-beta.6",
@@ -48,6 +49,9 @@
     "@codemirror/state": "^6.5.0",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.35.3",
+    "@codesandbox/sandpack-client": "^2.19.8",
+    "@codesandbox/sandpack-react": "^2.20.0",
+    "@codesandbox/sandpack-themes": "^2.0.21",
     "@google/genai": "^1.10.0",
     "@google/generative-ai": "^0.24.1",
     "@modelcontextprotocol/sdk": "^1.16.0",

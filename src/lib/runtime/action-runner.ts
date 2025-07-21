@@ -1,18 +1,20 @@
-import type { WebContainer } from '@webcontainer/api';
+import type { SandpackClient } from '@codesandbox/sandpack-client';
 import type { ActionCallbackData } from './message-parser';
 
 export class ActionRunner {
-  #webcontainer: WebContainer;
+  #client: SandpackClient;
 
-  constructor(webcontainer: WebContainer) {
-    this.#webcontainer = webcontainer;
+  constructor(client: SandpackClient) {
+    this.#client = client;
   }
 
   addAction(data: ActionCallbackData) {
-    // TODO: implement this
+    // Actions are now handled through Sandpack's message system
+    this.#client.dispatch({ type: 'action', payload: data });
   }
 
   runAction(data: ActionCallbackData) {
-    // TODO: implement this
+    // Run actions through Sandpack's bundler
+    this.#client.dispatch({ type: 'run-action', payload: data });
   }
 }

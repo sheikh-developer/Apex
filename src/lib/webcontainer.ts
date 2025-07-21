@@ -1,15 +1,28 @@
-import { WebContainer as WC } from '@webcontainer/api';
+import { SandpackClient } from './sandpack-client';
+import type { SandboxSetup } from '@codesandbox/sandpack-client';
 
-let webcontainer: WC;
+let client: SandpackClient;
 
-export async function getWebContainer() {
-  if (webcontainer) {
-    return webcontainer;
+export async function getSandpackClient(): Promise<SandpackClient> {
+  if (client) {
+    return client;
   }
 
-  webcontainer = await WC.boot();
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
 
-  return webcontainer;
+  client = new SandpackClient(iframe);
+  await client.init({
+    files: {},
+    dependencies: {
+      'react': '^18.0.0',
+      'react-dom': '^18.0.0'  
+    },
+    template: undefined // Let sandpack infer from dependencies
+  });
+
+  return client;
 }
 
-export { webcontainer as WebContainer };
+export const sandpackClient = getSandpackClient();

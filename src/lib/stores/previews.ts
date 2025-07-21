@@ -1,20 +1,25 @@
 import { map, type MapStore } from 'nanostores';
-import type { WebContainer } from '~/lib/webcontainer';
+import type { SandpackClient } from '@codesandbox/sandpack-client';
 
 export interface Preview {
   url: string;
 }
 
 export class PreviewsStore {
-  #webcontainer: WebContainer;
+  #client: SandpackClient;
 
   previews: MapStore<Record<string, Preview>> = map({});
 
-  constructor(webcontainer: WebContainer) {
-    this.#webcontainer = webcontainer;
+  constructor(client: SandpackClient) {
+    this.#client = client;
   }
 
   async init() {
-    // TODO: implement this
+    const iframe = await this.#client.iframe;
+    if (iframe) {
+      this.previews.set({
+        default: { url: iframe.src }
+      });
+    }
   }
 }

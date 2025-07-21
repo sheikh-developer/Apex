@@ -1,32 +1,19 @@
 import { atom, type WritableAtom } from 'nanostores';
-import type { ITerminal } from '~/types/terminal';
-import type { WebContainer } from '@webcontainer/api';
+import type { SandpackBundler } from '@codesandbox/sandpack-client';
 
 export class TerminalStore {
-  #webcontainer: WebContainer;
-  #terminal: ITerminal | undefined;
-
+  #bundler: SandpackBundler;
   showTerminal: WritableAtom<boolean> = atom(false);
 
-  constructor(webcontainer: WebContainer) {
-    this.#webcontainer = webcontainer;
+  constructor(bundler: SandpackBundler) {
+    this.#bundler = bundler;
   }
 
   toggleTerminal(value?: boolean) {
     this.showTerminal.set(value ?? !this.showTerminal.get());
   }
 
-  attachTerminal(terminal: ITerminal) {
-    this.#terminal = terminal;
-    this.#webcontainer.on('terminal-ready', () => {
-      this.#terminal?.focus();
-    });
-  }
-
-  onTerminalResize(cols: number, rows: number) {
-    this.#webcontainer.on('terminal-resize', () => {
-      this.#terminal?.setOption('rows', rows);
-      this.#terminal?.setOption('cols', cols);
-    });
-  }
+  // These methods are now handled by Sandpack's built-in terminal
+  attachTerminal() {}
+  onTerminalResize() {}
 }
