@@ -1,6 +1,6 @@
 import { atom, computed, map, type MapStore, type WritableAtom } from 'nanostores';
 import type { EditorDocument, ScrollPosition } from '~/components/editor/codemirror/CodeMirrorEditor';
-import type { FileMap, FilesStore } from './files';
+import type { FileEntry, FileMap, FilesStore } from './types';
 
 export type EditorDocuments = Record<string, EditorDocument>;
 
@@ -9,8 +9,8 @@ type SelectedFile = WritableAtom<string | undefined>;
 export class EditorStore {
   #filesStore: FilesStore;
 
-  selectedFile: SelectedFile = import.meta.hot?.data.selectedFile ?? atom<string | undefined>();
-  documents: MapStore<EditorDocuments> = import.meta.hot?.data.documents ?? map({});
+  selectedFile: SelectedFile = atom<string | undefined>();
+  documents: MapStore<EditorDocuments> = map({});
 
   currentDocument = computed([this.documents, this.selectedFile], (documents, selectedFile) => {
     if (!selectedFile) {
@@ -23,10 +23,6 @@ export class EditorStore {
   constructor(filesStore: FilesStore) {
     this.#filesStore = filesStore;
 
-    if (import.meta.hot) {
-      import.meta.hot.data.documents = this.documents;
-      import.meta.hot.data.selectedFile = this.selectedFile;
-    }
   }
 
   setDocuments(files: FileMap) {
@@ -36,22 +32,27 @@ export class EditorStore {
       Object.fromEntries<EditorDocument>(
         Object.entries(files)
           .map(([filePath, dirent]) => {
-            if (dirent === undefined || dirent.type === 'folder') {
+            if (dirent === undefined || dirent.type === 'directory') {
               return undefined;
             }
 
             const previousDocument = previousDocuments?.[filePath];
+
+            if (!dirent.content) {
+              return undefined;
+            }
 
             return [
               filePath,
               {
                 value: dirent.content,
                 filePath,
+                isBinary: false,
                 scroll: previousDocument?.scroll,
               },
             ] as [string, EditorDocument];
           })
-          .filter(Boolean) as Array<[string, EditorDocument]>,
+          .filter((entry): entry is [string, EditorDocument] => entry !== undefined),
       ),
     );
   }

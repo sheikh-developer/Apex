@@ -1,0 +1,14 @@
+export function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return function debounced(this: any, ...args: Parameters<T>) {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, wait);
+  };
+}

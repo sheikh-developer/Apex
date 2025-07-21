@@ -279,14 +279,14 @@ function newEditorState(
     doc: content,
     extensions: [
       EditorView.domEventHandlers({
-        scroll: debounce((event, view) => {
+        scroll: debounce((event: Event, view: EditorView) => {
           if (event.target !== view.scrollDOM) {
             return;
           }
 
           onScrollRef.current?.({ left: view.scrollDOM.scrollLeft, top: view.scrollDOM.scrollTop });
         }, debounceScroll),
-        keydown: (event, view) => {
+        keydown: (event: KeyboardEvent, view: EditorView) => {
           if (view.state.readOnly) {
             view.dispatch({
               effects: [readOnlyTooltipStateEffect.of(event.key !== 'Escape')],
@@ -396,7 +396,7 @@ function setEditorDocument(
     effects: [editableStateEffect.of(editable && !doc.isBinary)],
   });
 
-  getLanguage(doc.filePath).then((languageSupport) => {
+  getLanguage(doc.filePath).then((languageSupport: any) => {
     if (!languageSupport) {
       return;
     }

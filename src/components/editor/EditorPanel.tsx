@@ -23,6 +23,7 @@ import { isMobile } from '~/utils/mobile';
 import { FileBreadcrumb } from './FileBreadcrumb';
 import { FileTree } from './FileTree';
 import { Terminal, type TerminalRef } from './terminal/Terminal';
+import type { ITerminal } from '~/types/terminal';
 
 interface EditorPanelProps {
   files?: FileMap;
@@ -238,11 +239,11 @@ export const EditorPanel = memo(
                     className={classNames('h-full overflow-hidden', {
                       hidden: !isActive,
                     })}
-                    ref={(ref) => {
+                    ref={(ref: TerminalRef | null) => {
                       terminalRefs.current.push(ref);
                     }}
-                    onTerminalReady={(terminal) => workbenchStore.attachTerminal(terminal)}
-                    onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
+                    onTerminalReady={(terminal: ITerminal) => workbenchStore.attachTerminal(terminal)}
+                    onTerminalResize={(cols: number, rows: number) => workbenchStore.onTerminalResize(cols, rows)}
                     theme={theme}
                   />
                 );

@@ -1,0 +1,11 @@
+export const EDITOR_CONFIG = {
+  DEFAULT_TAB_SIZE: 2,
+  DEFAULT_FONT_SIZE: '14px',
+  DEFAULT_GUTTER_FONT_SIZE: '12px',
+};
+
+export const TERMINAL_CONFIG = {
+  DEFAULT_FONT_SIZE: '14px',
+  DEFAULT_LINE_HEIGHT: 1.5,
+  DEFAULT_THEME: 'dark',
+};

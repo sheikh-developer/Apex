@@ -12,35 +12,42 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-import { enhancedProvider } from '../../../lib/ai/providers';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { google } from '../../../lib/ai/providers';
 
 export async function POST(req: Request) {
-  const { messages }: { messages: Array<{ role: string; content: string }> } = await req.json();
+  const { messages }: { messages: any[] } = await req.json();
 
-  const model = enhancedProvider.languageModel('gemini-1.5-pro');
-  const geminiStream = await model.stream(
-    messages.map(m => m.content).join('\n'),
-    { temperature: 0.7 }
-  );
-
-  const readableStream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder();
-      for await (const chunk of geminiStream) {
-        controller.enqueue(encoder.encode(chunk.text()));
-      }
-      controller.close();
-    },
-    cancel() {
-      // Handle stream cancellation if needed
-    },
+  const model = google.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const chat = model.startChat({
+    history: messages.slice(0, -1).map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: Array.isArray(m.content) ? m.content.join('\n') : m.content }]
+    }))
   });
 
-  return new Response(readableStream, {
+  const result = await chat.sendMessageStream(messages[messages.length - 1].content);
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const chunk of result.stream) {
+          const text = chunk.text();
+          const data = `data: ${JSON.stringify({ text })}\n\n`;
+          controller.enqueue(new TextEncoder().encode(data));
+        }
+        controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));
+        controller.close();
+      } catch (error) {
+        controller.error(error);
+      }
+    }
+  });
+
+  return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    },
+      'Connection': 'keep-alive'
+    }
   });
 }

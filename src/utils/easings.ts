@@ -1,0 +1,1 @@
+export const cubicEasingFn = [0.65, 0.05, 0.36, 1];

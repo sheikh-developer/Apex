@@ -18,26 +18,6 @@ if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY environment variable');
 }
 
-const google = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-export const enhancedProvider = {
-  languageModel: (modelName: string) => {
-    const model = google.getGenerativeModel({ model: modelName });
-    return {
-      supports: {
-        multiModal: true,
-        tools: true,
-        structuredOutput: true,
-        streaming: true
-      },
-      stream: async (prompt: string, options?: any) => {
-        const result = await model.generateContentStream({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          ...options
-        });
-        
-        return result.stream;
-      }
-    };
-  },
+// Create Google AI provider instance
+export const google = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 };
