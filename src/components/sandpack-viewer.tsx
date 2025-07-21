@@ -15,7 +15,7 @@ PERFORMANCE OF THIS SOFTWARE.
 "use client";
 
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
-import { monokaiExtended } from "@codesandbox/sandpack-themes";
+import { sandpackDark } from "@codesandbox/sandpack-themes";
 
 interface SandpackViewerProps {
   code: string;
@@ -44,7 +44,7 @@ export const SandpackViewer: React.FC<SandpackViewerProps> = ({
       </div>
       <SandpackProvider
         template="react"
-        theme={monokaiExtended}
+        theme="dark"
         files={{
           "/App.tsx": {
             code,

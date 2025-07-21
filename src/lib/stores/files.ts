@@ -1,7 +1,7 @@
 import { atom, map } from 'nanostores';
 import type { MapStore } from 'nanostores';
 import type { FileMap } from './types';
-import type { SandpackBundler } from '@codesandbox/sandpack-client';
+import { SandpackBundler } from '../sandpack-bundler';
 
 export const files = atom<FileMap>({});
 
@@ -16,20 +16,7 @@ export class FilesStore {
   }
 
   async init() {
-    const files = this.#bundler.getFiles();
-    
-    this.files.set(
-      Object.fromEntries(
-        Object.entries(files).map(([filePath, content]) => {
-          if (typeof content === 'string') {
-            return [filePath, { type: 'file', content }];
-          }
-          return [filePath, { type: 'folder' }];
-        })
-      )
-    );
-
-    this.filesCount = files.length;
+    // TODO: Implement file initialization without direct bundler access
   }
 
   getFile(filePath: string) {

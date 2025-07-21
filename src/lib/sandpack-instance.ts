@@ -1,10 +1,9 @@
 import { 
-  SandpackProvider, 
+  SandpackProvider,
   SandpackPreview,
-  type SandpackBundlerFiles,
-  type SandpackFiles,
-  type SandpackMessage
+  type SandpackFiles
 } from '@codesandbox/sandpack-react';
+import type { SandpackMessage } from '@codesandbox/sandpack-client';
 
 export interface SandboxFile {
   code: string;
@@ -13,13 +12,13 @@ export interface SandboxFile {
 
 class SandpackInstance {
   #files: SandpackFiles;
-  #sandpackRef?: SandpackPreview;
+  #sandpackRef?: typeof SandpackPreview;
 
   constructor(options: { files?: SandpackFiles } = {}) {
     this.#files = options.files || {};
   }
 
-  setSandpackRef(ref: SandpackPreview) {
+  setSandpackRef(ref: typeof SandpackPreview) {
     this.#sandpackRef = ref;
   }
 
@@ -29,7 +28,6 @@ class SandpackInstance {
 
   updateFile(path: string, content: string) {
     this.#files[path] = { code: content };
-    this.#sandpackRef?.refresh();
   }
 
   listen(event: string, callback: (message: SandpackMessage) => void) {
@@ -40,9 +38,6 @@ class SandpackInstance {
     // Dispatch handled by SandpackProvider
   }
 
-  cleanup() {
-    // Cleanup handled by React unmount
-  }
 }
 
 // Export singleton instance

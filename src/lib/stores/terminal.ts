@@ -1,5 +1,5 @@
 import { atom, type WritableAtom } from 'nanostores';
-import type { SandpackBundler } from '@codesandbox/sandpack-client';
+import { SandpackBundler } from '../sandpack-bundler';
 
 export class TerminalStore {
   #bundler: SandpackBundler;
