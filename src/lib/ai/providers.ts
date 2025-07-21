@@ -18,6 +18,5 @@ if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY environment variable');
 }
 
-// Create Google AI provider instance
+// Create Google AI provider instance  
 export const google = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-};
