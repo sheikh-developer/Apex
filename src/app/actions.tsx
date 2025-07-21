@@ -1,32 +1,27 @@
-import { streamUI, getMutableAIState, openai } from '@ai-sdk/rsc';
+/******************************************************************************
+Copyright (c) Likhon Sheikh - @likhonsheikh on Telegram
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+import { streamUI, getMutableAIState } from '@ai-sdk/rsc';
+import { enhancedProvider } from '../lib/ai/providers';
 import { z } from 'zod';
-import { Flights } from '../components/flights';
 import { ClientMessage } from '../lib/ai/types';
+import 'dotenv/config';
+import { ApexMCPAgent } from '../lib/ai/mcp-agent';
 
-const searchFlights = async (
-  source: string,
-  destination: string,
-  date: string,
-) => {
-  return [
-    {
-      id: '1',
-      flightNumber: 'AA123',
-    },
-    {
-      id: '2', 
-      flightNumber: 'AA456',
-    },
-  ];
-};
-
-const lookupFlight = async (flightNumber: string) => {
-  return {
-    flightNumber: flightNumber,
-    departureTime: '10:00 AM',
-    arrivalTime: '12:00 PM',
-  };
-};
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error('Missing GEMINI_API_KEY environment variable');
+}
 
 export async function submitUserMessage(input: string): Promise<ClientMessage> {
   'use server';
@@ -41,44 +36,33 @@ export async function submitUserMessage(input: string): Promise<ClientMessage> {
     }
   ]);
 
-  const model = openai('gpt-3.5-turbo-instruct');
+  const model = enhancedProvider.languageModel('gemini-1.5-flash');
+  const agent = new ApexMCPAgent(process.env.GEMINI_API_KEY);
+  await agent.initialize();
 
   const ui = await streamUI({
-    model: model,
-    system: 'you are a flight booking assistant', 
+    model: model as any,
+    system: 'You are an AI assistant that can use tools to perform tasks.',
     prompt: input,
-    text: async ({ content }) => <div>{content}</div>,
+    text: ({ content }) => {
+      return <div>{content}</div>;
+    },
     tools: {
-      searchFlights: {
-        description: 'search for flights',
+      executeTool: {
+        description: 'Executes a tool with the given parameters.',
         parameters: z.object({
-          source: z.string().describe('The origin of the flight'),
-          destination: z.string().describe('The destination of the flight'),
-          date: z.string().describe('The date of the flight'),
+          toolName: z.string().describe('The name of the tool to execute.'),
+          parameters: z.any().describe('The parameters for the tool.'),
         }),
-        generate: async function* ({ source, destination, date }) {
-          yield `Searching for flights from ${source} to ${destination} on ${date}...`;
-          const results = await searchFlights(source, destination, date);
-          
-          return (<Flights flights={results} />);
-        },
-      },
-      lookupFlight: {
-        description: 'lookup details for a flight',
-        parameters: z.object({
-          flightNumber: z.string().describe('The flight number'),
-        }),
-        generate: async function* ({ flightNumber }) {
-          yield `Looking up details for flight ${flightNumber}...`;
-          const details = await lookupFlight(flightNumber);
-
-          return (
-            <div>
-              <div>Flight Number: {details.flightNumber}</div>
-              <div>Departure Time: {details.departureTime}</div>
-              <div>Arrival Time: {details.arrivalTime}</div>
-            </div>
-          );
+        generate: async function* ({ toolName, parameters }) {
+          yield `Executing tool: ${toolName}...`;
+          try {
+            // @ts-ignore
+            const result = await agent.executeMCPTool(toolName, parameters);
+            return <div>Tool {toolName} executed successfully: {JSON.stringify(result)}</div>;
+          } catch (error) {
+            return <div>Error executing tool {toolName}: {error instanceof Error ? error.message : 'Unknown error'}</div>;
+          }
         },
       },
     },

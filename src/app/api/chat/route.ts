@@ -1,22 +1,46 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'; // Still used for initializing the client
-import { streamText, convertToModelMessages, UIMessage } from 'ai'; // NEW AI SDK 5 imports
-import { google } from '@ai-sdk/google'; // NEW AI SDK 5 Google provider
+/******************************************************************************
+Copyright (c) Likhon Sheikh - @likhonsheikh on Telegram
 
-export const runtime = 'edge';
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+import { enhancedProvider } from '../../../lib/ai/providers';
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const { messages }: { messages: Array<{ role: string; content: string }> } = await req.json();
 
-  // Use the new google provider from @ai-sdk/google
-  // The API key is usually picked up automatically from process.env, or can be passed explicitly.
-  const model = google('models/gemini-1.5-pro'); // Specify your model here
+  const model = enhancedProvider.languageModel('gemini-1.5-pro');
+  const geminiStream = await model.stream(
+    messages.map(m => m.content).join('\n'),
+    { temperature: 0.7 }
+  );
 
-  const result = await streamText({
-    model: model,
-    // Convert UIMessages from the client to ModelMessages for the LLM
-    messages: convertToModelMessages(messages),
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      for await (const chunk of geminiStream) {
+        controller.enqueue(encoder.encode(chunk.text()));
+      }
+      controller.close();
+    },
+    cancel() {
+      // Handle stream cancellation if needed
+    },
   });
 
-  // Convert the stream back to UIMessageStreamResponse for the client
-  return result.toUIMessageStreamResponse();
+  return new Response(readableStream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }

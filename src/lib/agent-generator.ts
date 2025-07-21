@@ -1,3 +1,17 @@
+/******************************************************************************
+Copyright (c) Likhon Sheikh - @likhonsheikh on Telegram
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
 // src/lib/agent-generator.ts (Updated for AI SDK 5 Beta)
 
 export interface AgentConfig {
@@ -121,10 +135,10 @@ function calculateEstimatedCost(tokensUsed: number, toolCalls: number): number {
   return (tokensUsed * TOKEN_COST) + (toolCalls * TOOL_COST);
 }
 
-async function runAgent() {
-  console.log(`--- Running \${AGENT_NAME} ---`);
-  console.log(`Persona: \${AGENT_PERSONA}`);
-  console.log(`Initial Prompt: \${INITIAL_PROMPT}`);
+async function runAgent(config: AgentConfig) {
+  console.log(\`--- Running \${config.name} ---\`);
+  console.log(\`Persona: \${config.persona}\`);
+  console.log(\`Initial Prompt: \${config.initialPrompt}\`);
 
   let tokensUsed = 0;
   let toolCallsCount = 0;
@@ -138,12 +152,12 @@ async function runAgent() {
         console.error('Budget exceeded! Current monthly spend:', currentSpend);
         throw new Error('Monthly budget has been exceeded');
       }
-      console.log(`Budget available: \${remainingBudget.toFixed(2)} of \${monthlyBudget}`);
+      console.log(\`Budget available: \${remainingBudget.toFixed(2)} of \${monthlyBudget}\`);
     }
     const { object: result, toolResults, usage } = await generateObject({ // 'generateObject' is now preferred for tool calling
       model: model,
-      system: AGENT_PERSONA,
-      prompt: INITIAL_PROMPT,
+      system: config.persona,
+      prompt: config.initialPrompt,
       tools: agentTools, // Use the new agentTools object
       // Agentic control options
       ${stopWhenCondition}
@@ -171,8 +185,15 @@ async function runAgent() {
   }
 }
 
-// Uncomment the line below to run the agent when this file is executed.
-runAgent();
+// To run the agent, you would call runAgent with a config object.
+// Example:
+// const myAgentConfig: AgentConfig = {
+//   name: 'My Agent',
+//   persona: 'You are a helpful assistant.',
+//   tools: ['web_search'],
+//   initialPrompt: 'Search for the latest AI news.'
+// };
+// runAgent(myAgentConfig);
 
 // For demonstration purposes, export the runAgent function
 export { runAgent };

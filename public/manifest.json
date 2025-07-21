@@ -1,7 +1,7 @@
 {
-  "name": "AI SDK 5 Beta",
-  "short_name": "AI SDK 5",
-  "description": "The AI SDK 5 Beta is intended for new projects, trying out new features, and experimenting with migrations from v4.",
+  "name": "Apex AI Agent Platform",
+  "short_name": "Apex AI",
+  "description": "The Apex AI Agent Platform is intended for new projects, trying out new features, and experimenting with migrations from v4.",
   "icons": [
     {
       "src": "/apex.png",
@@ -16,6 +16,6 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#1a3d7c",
+  "background_color": "#e6f0ff"
 }

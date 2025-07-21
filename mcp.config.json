@@ -1,0 +1,325 @@
+{
+  "name": "Apex AI Agent Platform",
+  "version": "1.0.0",
+  "description": "No-code AI agent platform with comprehensive MCP tool integration",
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "description": "Web automation with Puppeteer",
+      "tools": [
+        "puppeteer_navigate",
+        "puppeteer_screenshot",
+        "puppeteer_click",
+        "puppeteer_fill",
+        "puppeteer_select",
+        "puppeteer_hover",
+        "puppeteer_evaluate"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--headless"
+      ],
+      "description": "Advanced web automation with Playwright",
+      "tools": [
+        "browser_navigate",
+        "browser_go_back",
+        "browser_go_forward",
+        "browser_choose_file",
+        "browser_snapshot",
+        "browser_click",
+        "browser_hover",
+        "browser_type",
+        "browser_select_option",
+        "browser_take_screenshot",
+        "browser_press_key",
+        "browser_wait",
+        "browser_save_as_pdf",
+        "browser_close",
+        "browser_install"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "description": "Persistent memory across conversations",
+      "tools": [
+        "memory_store",
+        "memory_retrieve",
+        "memory_delete",
+        "memory_list"
+      ]
+    },
+    "filesystem": {
+      "url": "http://localhost:8888/sse"
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "GitHub repository and API access",
+      "tools": [
+        "github_search_repositories",
+        "github_get_repository",
+        "github_list_issues",
+        "github_create_issue",
+        "github_get_file_contents",
+        "github_create_pull_request",
+        "github_list_commits"
+      ]
+    },
+    "time": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-time",
+        "--local-timezone=America/New_York"
+      ],
+      "description": "Time and scheduling operations",
+      "tools": [
+        "get_current_time",
+        "get_timezone",
+        "format_time",
+        "calculate_duration",
+        "schedule_reminder"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "description": "Enhanced reasoning and thought processes",
+      "tools": [
+        "think_step_by_step",
+        "analyze_problem",
+        "generate_solutions",
+        "evaluate_options"
+      ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    },
+    "aistudio": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "aistudio-mcp-server"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "your_api_key_here",
+        "GEMINI_MODEL": "gemini-2.5-flash",
+        "GEMINI_TIMEOUT": "600000",
+        "GEMINI_MAX_OUTPUT_TOKENS": "16384",
+        "GEMINI_MAX_FILES": "10",
+        "GEMINI_MAX_TOTAL_FILE_SIZE": "50",
+        "GEMINI_TEMPERATURE": "0.2"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    },
+    "mcp-wordpress": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-wordpress"
+      ],
+      "env": {
+        "WORDPRESS_SITE_URL": "https://your-site.com",
+        "WORDPRESS_USERNAME": "your-username",
+        "WORDPRESS_APP_PASSWORD": "your-app-password"
+      }
+    },
+    "chrome-applescript": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/index.js"
+      ],
+      "env": {}
+    },
+    "puppeteer-real-browser": {
+      "command": "npx",
+      "args": [
+        "puppeteer-real-browser-mcp-server@latest"
+      ]
+    },
+    "browser-use": {
+      "command": "uvx",
+      "args": [
+        "browser-use",
+        "--mcp"
+      ],
+      "env": {
+        "OPENAI_API_KEY": "sk-..."
+      }
+    },
+    "selenium": {
+      "command": "selenium-mcp-server",
+      "args": [
+        "--browser",
+        "chrome"
+      ]
+    },
+    "jetbrains": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jetbrains/mcp-proxy"
+      ]
+    },
+    "mcp-server-flomo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@chatmcp/mcp-server-flomo"
+      ],
+      "env": {
+        "FLOMO_API_URL": "https://flomoapp.com/iwh/xxx/xxx/"
+      }
+    }
+  },
+  "agentTemplates": {
+    "webScraper": {
+      "name": "Web Scraper Agent",
+      "description": "Automated web data extraction with storage",
+      "requiredTools": [
+        "playwright",
+        "filesystem",
+        "memory"
+      ],
+      "optionalTools": [
+        "time"
+      ],
+      "capabilities": [
+        "Navigate websites",
+        "Extract structured data",
+        "Handle pagination",
+        "Save results to files",
+        "Track scraping progress",
+        "Schedule periodic scraping"
+      ]
+    },
+    "fileProcessor": {
+      "name": "File Processing Agent",
+      "description": "Batch file operations and transformations",
+      "requiredTools": [
+        "filesystem",
+        "memory"
+      ],
+      "optionalTools": [
+        "time"
+      ],
+      "capabilities": [
+        "Process multiple file formats",
+        "Batch operations",
+        "Data transformation",
+        "Progress tracking",
+        "Error recovery",
+        "Generate reports"
+      ]
+    },
+    "githubMonitor": {
+      "name": "GitHub Monitor Agent",
+      "description": "Repository monitoring and automation",
+      "requiredTools": [
+        "github",
+        "memory"
+      ],
+      "optionalTools": [
+        "time",
+        "filesystem"
+      ],
+      "capabilities": [
+        "Monitor repository changes",
+        "Track issues and PRs",
+        "Automated responses",
+        "Generate reports",
+        "Schedule checks",
+        "Save activity logs"
+      ]
+    },
+    "researchAssistant": {
+      "name": "Research Assistant Agent",
+      "description": "Comprehensive research with web and file analysis",
+      "requiredTools": [
+        "playwright",
+        "filesystem",
+        "memory"
+      ],
+      "optionalTools": [
+        "github",
+        "time"
+      ],
+      "capabilities": [
+        "Web research and data collection",
+        "Document analysis",
+        "Information synthesis",
+        "Report generation",
+        "Source tracking",
+        "Persistent knowledge base"
+      ]
+    }
+  },
+  "security": {
+    "enableSafeMode": true,
+    "allowedDomains": [
+      "*.github.com",
+      "*.stackoverflow.com",
+      "*.wikipedia.org",
+      "*.arxiv.org"
+    ],
+    "restrictedDomains": [
+      "*.facebook.com",
+      "*.instagram.com",
+      "banking.*",
+      "*.paypal.com"
+    ],
+    "fileSystemRestrictions": {
+      "allowedExtensions": [
+        ".txt",
+        ".json",
+        ".csv",
+        ".md",
+        ".js",
+        ".ts",
+        ".py",
+        ".html",
+        ".css"
+      ],
+      "maxFileSize": "10MB",
+      "maxFilesPerOperation": 100
+    }
+  },
+  "performance": {
+    "maxConcurrentOperations": 5,
+    "timeoutMs": 30000,
+    "retryAttempts": 3,
+    "cacheResults": true,
+    "cacheDurationMs": 300000
+  },
+  "automation": {
+    "requireApproval": false
+  }
+}
