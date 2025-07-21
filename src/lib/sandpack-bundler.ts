@@ -6,7 +6,7 @@ interface SandboxFile {
 }
 
 export class SandpackBundler {
-  #client!: SandpackClientBase;
+  #client: SandpackClientBase | null = null;
   #files: Record<string, SandboxFile>;
   #iframe: HTMLIFrameElement;
 
@@ -15,8 +15,6 @@ export class SandpackBundler {
     this.#iframe = document.createElement('iframe');
     this.#iframe.id = 'sandpack-runtime';
     this.#iframe.sandbox = 'allow-scripts allow-same-origin';
-    document.body.appendChild(this.#iframe);
-    
     document.body.appendChild(this.#iframe);
   }
 
@@ -33,6 +31,7 @@ export class SandpackBundler {
     );
 
     return new Promise((resolve) => {
+      if (!this.#client) throw new Error('Client not initialized');
       this.#client.listen((msg: SandpackMessage) => {
         if (msg.type === 'done') {
           resolve();
@@ -42,12 +41,13 @@ export class SandpackBundler {
   }
 
   updateFile(path: string, content: string): void {
+    if (!this.#client) throw new Error('Client not initialized');
     this.#files[path] = { code: content, hidden: false };
     this.#client.updateSandbox({ files: this.#files });
   }
 
-
   dispose(): void {
+    if (!this.#client) return;
     this.#client.destroy();
     document.body.removeChild(this.#iframe);
   }
