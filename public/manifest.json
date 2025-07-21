@@ -1,0 +1,21 @@
+{
+  "name": "AI SDK 5 Beta",
+  "short_name": "AI SDK 5",
+  "description": "The AI SDK 5 Beta is intended for new projects, trying out new features, and experimenting with migrations from v4.",
+  "icons": [
+    {
+      "src": "/apex.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apex.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
