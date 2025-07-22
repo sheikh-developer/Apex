@@ -13,9 +13,8 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 import { type ReactNode } from 'react';
-import { AI } from './ai';
 import { Metadata } from 'next';
-import { Providers } from './providers';
+import { AppWrapper } from './app-wrapper';
 
 export const metadata: Metadata = {
   title: 'Apex',
@@ -44,10 +43,8 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body>
-        <AI>
-          <Providers>{children}</Providers>
-        </AI>
+      <body suppressHydrationWarning={true}>
+        <AppWrapper>{children}</AppWrapper>
       </body>
     </html>
   );

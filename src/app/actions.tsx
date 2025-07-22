@@ -12,19 +12,20 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+'use server';
+
 import { streamUI, getMutableAIState } from '@ai-sdk/rsc';
-import { enhancedProvider } from '../lib/ai/providers';
+import { nanoid } from 'nanoid';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import { ClientMessage } from '../lib/ai/types';
 import 'dotenv/config';
-import { ApexMCPAgent } from '../lib/ai/mcp-agent';
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY environment variable');
 }
 
 export async function submitUserMessage(input: string): Promise<ClientMessage> {
-  'use server';
 
   const aiState = getMutableAIState();
   aiState.update([
@@ -32,11 +33,14 @@ export async function submitUserMessage(input: string): Promise<ClientMessage> {
     {
       role: 'user',
       content: input,
-      id: Date.now().toString()
+      id: nanoid()
     }
   ]);
 
-  const model = enhancedProvider.languageModel('gemini-1.5-flash');
+  const model = createGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY,
+  }).languageModel('gemini-1.5-flash');
+  const { ApexMCPAgent } = await import('../lib/ai/mcp-agent');
   const agent = new ApexMCPAgent(process.env.GEMINI_API_KEY);
   await agent.initialize();
 
@@ -44,9 +48,6 @@ export async function submitUserMessage(input: string): Promise<ClientMessage> {
     model: model as any,
     system: 'You are an AI assistant that can use tools to perform tasks.',
     prompt: input,
-    text: ({ content }) => {
-      return <div>{content}</div>;
-    },
     tools: {
       executeTool: {
         description: 'Executes a tool with the given parameters.',
@@ -73,12 +74,12 @@ export async function submitUserMessage(input: string): Promise<ClientMessage> {
     {
       role: 'assistant',
       content: 'Responded to user message',
-      id: Date.now().toString()
+      id: nanoid()
     }
   ]);
 
   return {
-    id: Date.now().toString(),
+    id: nanoid(),
     role: 'assistant',
     display: ui.value
   };

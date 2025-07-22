@@ -15,7 +15,7 @@ PERFORMANCE OF THIS SOFTWARE.
 import { createAI } from '@ai-sdk/rsc';
 import { submitUserMessage } from './actions';
 import { ServerMessage, ClientMessage } from '../lib/ai/types';
-import { google } from '../lib/ai/providers';
+import { enhancedProvider } from '../lib/ai/providers';
 
 export type AIState = ServerMessage[];
 export type UIState = ClientMessage[];
@@ -24,9 +24,6 @@ export const AI = createAI<AIState, UIState>({
   initialAIState: [],
   initialUIState: [],
   actions: {
-    submitUserMessage: {
-      action: submitUserMessage,
-      description: 'Submit a user message to the assistant'
-    }
+    submitUserMessage
   }
 });

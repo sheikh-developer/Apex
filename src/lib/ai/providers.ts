@@ -19,4 +19,4 @@ if (!process.env.GEMINI_API_KEY) {
 }
 
 // Create Google AI provider instance  
-export const google = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+export const enhancedProvider = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);

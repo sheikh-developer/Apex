@@ -11,13 +11,13 @@ exports.id = "vendor-chunks/shebang-regex";
 exports.ids = ["vendor-chunks/shebang-regex"];
 exports.modules = {
 
-/***/ "(rsc)/./node_modules/shebang-regex/index.js":
+/***/ "(action-browser)/./node_modules/shebang-regex/index.js":
 /*!*********************************************!*\
   !*** ./node_modules/shebang-regex/index.js ***!
   \*********************************************/
 /***/ ((module) => {
 
-eval("\nmodule.exports = /^#!(.*)/;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9ub2RlX21vZHVsZXMvc2hlYmFuZy1yZWdleC9pbmRleC5qcyIsIm1hcHBpbmdzIjoiQUFBYTtBQUNiIiwic291cmNlcyI6WyJDOlxcVXNlcnNcXGxpa2hvXFxPbmVEcml2ZVxcR2l0SHViXFxBcGV4XFxub2RlX21vZHVsZXNcXHNoZWJhbmctcmVnZXhcXGluZGV4LmpzIl0sInNvdXJjZXNDb250ZW50IjpbIid1c2Ugc3RyaWN0Jztcbm1vZHVsZS5leHBvcnRzID0gL14jISguKikvO1xuIl0sIm5hbWVzIjpbXSwiaWdub3JlTGlzdCI6WzBdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./node_modules/shebang-regex/index.js\n");
+eval("\nmodule.exports = /^#!(.*)/;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKGFjdGlvbi1icm93c2VyKS8uL25vZGVfbW9kdWxlcy9zaGViYW5nLXJlZ2V4L2luZGV4LmpzIiwibWFwcGluZ3MiOiJBQUFhO0FBQ2IiLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcbGlraG9cXE9uZURyaXZlXFxHaXRIdWJcXEFwZXhcXG5vZGVfbW9kdWxlc1xcc2hlYmFuZy1yZWdleFxcaW5kZXguanMiXSwic291cmNlc0NvbnRlbnQiOlsiJ3VzZSBzdHJpY3QnO1xubW9kdWxlLmV4cG9ydHMgPSAvXiMhKC4qKS87XG4iXSwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbMF0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(action-browser)/./node_modules/shebang-regex/index.js\n");
 
 /***/ })
 

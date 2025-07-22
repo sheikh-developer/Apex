@@ -13,41 +13,22 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { google } from '../../../lib/ai/providers';
+import { streamText, convertToCoreMessages } from 'ai';
+import { z } from 'zod';
 
 export async function POST(req: Request) {
   const { messages }: { messages: any[] } = await req.json();
 
-  const model = google.getGenerativeModel({ model: "gemini-1.5-pro" });
-  const chat = model.startChat({
-    history: messages.slice(0, -1).map(m => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: Array.isArray(m.content) ? m.content.join('\n') : m.content }]
-    }))
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+  const result = await streamText({
+    model: model as any,
+    messages: convertToCoreMessages(messages),
+    tools: {
+      // Define your tools here if needed
+    },
   });
 
-  const result = await chat.sendMessageStream(messages[messages.length - 1].content);
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        for await (const chunk of result.stream) {
-          const text = chunk.text();
-          const data = `data: ${JSON.stringify({ text })}\n\n`;
-          controller.enqueue(new TextEncoder().encode(data));
-        }
-        controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));
-        controller.close();
-      } catch (error) {
-        controller.error(error);
-      }
-    }
-  });
-
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
-    }
-  });
+  return result.toAIStream();
 }
