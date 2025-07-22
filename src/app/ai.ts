@@ -16,13 +16,14 @@ import { createAI } from '@ai-sdk/rsc';
 import { submitUserMessage } from './actions';
 import { ServerMessage, ClientMessage } from '../lib/ai/types';
 import { enhancedProvider } from '../lib/ai/providers';
+import { generateId } from 'ai';
 
-export type AIState = ServerMessage[];
+export type AIState = { chatId: string; messages: ServerMessage[] };
 export type UIState = ClientMessage[];
 
 export const AI = createAI<AIState, UIState>({
-  initialAIState: [],
-  initialUIState: [],
+  initialAIState: { chatId: generateId(), messages: [] } as AIState,
+  initialUIState: [] as UIState,
   actions: {
     submitUserMessage
   }
